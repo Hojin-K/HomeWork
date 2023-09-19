@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_home_flow"
+    app:startDestination="@id/memberListFragment">
+
+    <fragment
+        android:id="@+id/memberListFragment"
+        android:name="com.example.homework.service.MemberListFragment"
+        android:label="MemberListFragment" >
+        <action
+            android:id="@+id/action_memberListFragment_to_memberAddFragment"
+            app:destination="@id/memberJoinFragment" />
+        <action
+            android:id="@+id/action_memberListFragment_to_memberInfoFragment"
+            app:destination="@id/memberInfoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/memberInfoFragment"
+        android:name="com.example.homework.service.MemberInfoFragment"
+        android:label="MemberInfoFragment" >
+        <action
+            android:id="@+id/action_memberInfoFragment_to_memberAddFragment"
+            app:destination="@id/memberJoinFragment" />
+        <action
+            android:id="@+id/action_memberInfoFragment_to_memberListFragment"
+            app:destination="@id/memberListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/memberJoinFragment"
+        android:name="com.example.homework.service.MemberJoinFragment"
+        android:label="MemberJoinFragment">
+        <action
+            android:id="@+id/action_memberAddFragment_to_memberInfoFragment"
+            app:destination="@id/memberInfoFragment" />
+        <action
+            android:id="@+id/action_memberAddFragment_to_memberListFragment"
+            app:destination="@id/memberListFragment" />
+    </fragment>
+</navigation>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+        <ImageView
+            android:id="@+id/input_image"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:background="@drawable/box_border"
+            android:tooltipText="사진 선택"
+            android:onClick="onImageClick"/>
+        <EditText
+            android:id="@+id/input_name"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:textSize="15sp"
+            android:hint="ID"
+            android:gravity="center"
+            android:background="@drawable/box_border"/>
+        <EditText
+            android:id="@+id/input_phone"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:textSize="15sp"
+            android:hint="Phone"
+            android:gravity="center"
+            android:background="@drawable/box_border"/>
+        <Button
+            android:id="@+id/btn_join"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:textSize="15sp"
+            android:text="Join"/>
+    </LinearLayout>
+</LinearLayout>

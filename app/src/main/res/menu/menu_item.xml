@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_list"
+        android:enabled="true"
+        android:title="@string/MemberList"/>
+
+    <item
+        android:id="@+id/menu_info"
+        android:enabled="true"
+        android:title="@string/MemberInfo"/>
+
+    <item
+        android:id="@+id/menu_join"
+        android:enabled="true"
+        android:title="@string/MemberJoin"/>
+</menu>

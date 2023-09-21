@@ -2,14 +2,17 @@ package com.example.homework.service;
 
 import static android.app.Activity.RESULT_OK;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +25,10 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.core.content.PackageManagerCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.homework.MainActivity;
@@ -42,11 +48,8 @@ public class MemberJoinFragment extends Fragment {
     private ImageView imageView;
     private Uri imageCaptureUri;
 
-    private ActivityResultLauncher<Intent> startCameraAction;
+    private ActivityResultLauncher<Intent> startCameraActionLauncher;
 
-    private static final int PICK_FROM_CAMERA = 0;
-    private static final int PICK_FROM_ALBUM = 1;
-    private static final int CROP_FROM_iMAGE = 2;
     private String currentPhotoPath;
 
     @Nullable
@@ -64,7 +67,7 @@ public class MemberJoinFragment extends Fragment {
 
         gestureUtil = new GestureUtil((MainActivity) getContext(), view, R.layout.fragment_m_join);//view.getId() 호출하면 Fragment 생성시 에러.
 
-        startCameraAction = registerForActivityResult(
+        startCameraActionLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
                     @Override
@@ -76,6 +79,8 @@ public class MemberJoinFragment extends Fragment {
                     }
                 }
         );
+
+
     }
 
     /*@Override
@@ -116,6 +121,8 @@ public class MemberJoinFragment extends Fragment {
                 .show();
     }
 
+
+
     public void cameraMode(){
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
@@ -129,10 +136,10 @@ public class MemberJoinFragment extends Fragment {
 
         if (photoFile != null) {
             Uri photoURI = FileProvider.getUriForFile(getContext(),
-                    "com.example.android.fileprovider",
+                    getContext().getPackageName()+".fileprovider",
                     photoFile);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-            startCameraAction.launch(intent);
+            startCameraActionLauncher.launch(intent);
         }
     }
 

@@ -21,11 +21,28 @@ public class GestureUtil {
 
     private float downX;
     private float upX;
+    private float downY;
+    private float upY;
+    private float distX;
+    private float distY;
+
 
     private GestureDetector detector;
     private Context context;
 
-    public GestureUtil(Context context, View view, int viewId) {
+    private static GestureUtil instance;
+
+    private GestureUtil() {
+    }
+
+    public static synchronized GestureUtil getInstance(){
+        if(instance == null){
+            instance = new GestureUtil();
+        }
+        return instance;
+    }
+
+    public void setGesture(Context context, View view, int viewId) {
         this.view = view;
         this.viewId = viewId;
         this.viewName = view.getResources().getResourceEntryName(viewId);
@@ -38,16 +55,21 @@ public class GestureUtil {
                 int direction = 0;
                 if(event.getAction() == MotionEvent.ACTION_UP){
                     Log.i("Info", "키업했어요");
-                    if(downX > upX){
-                        Log.i("Info", "왼쪽");
-                        direction = 0;
+                    Log.i("Info", distX+"///"+distY);
+                    if(distY < 3 && distY > -3){
+                        if(distX > 2){
+                            Log.i("Info", "왼쪽");
+                            direction = 0;
 
-                    }else if(downX < upX){
-                        Log.i("Info", "오른쪽");
-                        direction = 1;
+                        }else if(distX < -2){
+                            Log.i("Info", "오른쪽");
+                            direction = 1;
+                        }
+
+                        moveFragement(direction);
+                    }else{
+                        Log.i("Info", "이동없음");
                     }
-
-                    moveFragement(direction);
                 }
                 return true;
             }
@@ -71,12 +93,10 @@ public class GestureUtil {
 
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-                Log.i("Info", String.format("e1 위치 %f",e1.getX()));
-                Log.i("Info", String.format("e2 위치 %f",e2.getX()));
-                Log.i("Info", String.format("거리차이 %f",distanceX));
-
-                downX = e1.getX();
-                upX = e2.getX();
+                distX = 0.0f;
+                distY = 0.0f;
+                distX = distanceX;
+                distY = distanceY;
 
                 return true;
             }

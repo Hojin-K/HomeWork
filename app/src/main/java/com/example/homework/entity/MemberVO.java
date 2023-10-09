@@ -1,26 +1,24 @@
 package com.example.homework.entity;
 
 import android.graphics.drawable.Icon;
-import android.media.Image;
 
 public class MemberVO {
 
-    private Icon icon;
+    private String uri;
     private String name;
+    private String id;
+    private String pwd;
     private String phone;
 
-    public MemberVO(Icon icon, String name, String phone) {
-        this.icon = icon;
-        this.name = name;
-        this.phone = phone;
+    public MemberVO() {
     }
 
-    public Icon getIcon() {
-        return icon;
+    public String getUri() {
+        return uri;
     }
 
-    public void setImage(Icon icon) {
-        this.icon = icon;
+    public void setUri(String uri) {
+        this.uri = uri;
     }
 
     public String getName() {
@@ -29,6 +27,22 @@ public class MemberVO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getPwd() {
+        return pwd;
+    }
+
+    public void setPwd(String pwd) {
+        this.pwd = pwd;
     }
 
     public String getPhone() {

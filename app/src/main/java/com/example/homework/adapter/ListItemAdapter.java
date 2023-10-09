@@ -1,7 +1,10 @@
 package com.example.homework.adapter;
 
 import android.content.Context;
-import android.media.Image;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +50,25 @@ public class ListItemAdapter extends BaseAdapter {
         TextView name = convertView.findViewById(R.id.name);
         TextView phone = convertView.findViewById(R.id.phone);
 
-        image.setImageIcon(member.getIcon());
+        if(member.getUri() != null){
+            try {
+                /*BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inJustDecodeBounds = true;
+                options.outWidth = 20;
+                options.outHeight = 20;*/
+                Log.i("i", member.getUri());
+                //Bitmap bmp = BitmapFactory.decodeFile(member.getUri(), options);
+                Bitmap bmp = BitmapFactory.decodeFile(member.getUri());
+
+                if ( bmp != null ) {
+                    image.setImageBitmap(bmp); // m_ivShowImage : ImageView
+                }
+            }
+            catch( Exception e ) {
+                e.printStackTrace();
+            }
+        }
+
         name.setText(member.getName());
         phone.setText(member.getPhone());
 

@@ -24,7 +24,8 @@ public class MemberInfoFragment extends Fragment {
 
         view = inflater.inflate(R.layout.fragment_m_info, container, false);
 
-        gestureUtil = new GestureUtil((MainActivity)getContext(), view, R.layout.fragment_m_info);
+        gestureUtil = GestureUtil.getInstance();
+        gestureUtil.setGesture(getContext(), view, R.layout.fragment_m_info);
 
         return view;
     }

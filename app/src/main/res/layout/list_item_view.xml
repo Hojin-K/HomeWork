@@ -5,8 +5,8 @@
     android:orientation="horizontal">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:id="@+id/image"
         android:src="@mipmap/ic_launcher"
         android:layout_marginLeft="10dp"
@@ -28,6 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/phone"
+            android:textAlignment="center"
             android:text="010-1111-1111"
             android:textSize="30dp"
             android:textColor="@android:color/holo_blue_dark"/>

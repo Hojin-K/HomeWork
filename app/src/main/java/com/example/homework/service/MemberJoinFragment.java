@@ -2,12 +2,12 @@ package com.example.homework.service;
 
 import static android.app.Activity.RESULT_OK;
 
-import android.Manifest;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -16,6 +16,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -25,15 +27,16 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
-import androidx.core.content.PackageManagerCompat;
 import androidx.fragment.app.Fragment;
 
-import com.example.homework.MainActivity;
+import com.example.homework.App;
 import com.example.homework.R;
+import com.example.homework.db.DBHelper;
+import com.example.homework.entity.MemberVO;
+import com.example.homework.util.CameraUtil;
 import com.example.homework.util.GestureUtil;
+import com.example.homework.util.MediaScanner;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,10 +50,18 @@ public class MemberJoinFragment extends Fragment {
     private GestureUtil gestureUtil;
     private ImageView imageView;
     private Uri imageCaptureUri;
+    private EditText inputId, inputName, inputPwd, inputPhone;
+    private Button btnJoin;
 
     private ActivityResultLauncher<Intent> startCameraActionLauncher;
 
-    private String currentPhotoPath;
+    private String imageFilePath;
+    private MediaScanner mMediaScanner;
+
+    private CameraUtil cameraUtil;
+    private MemberVO memberVO;
+    private SQLiteDatabase myDB;
+    private DBHelper dbHelper;
 
     @Nullable
     @Override
@@ -62,10 +73,20 @@ public class MemberJoinFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        imageView = view.findViewById(R.id.input_image);
+        imageView = (ImageView) view.findViewById(R.id.input_image);
         imageView.setOnClickListener(this::onImageClick);
 
-        gestureUtil = new GestureUtil((MainActivity) getContext(), view, R.layout.fragment_m_join);//view.getId() 호출하면 Fragment 생성시 에러.
+        //회원정보 입력
+        inputId = (EditText) view.findViewById(R.id.input_id);
+        inputPwd = (EditText) view.findViewById(R.id.input_pwd);
+        inputName = (EditText) view.findViewById(R.id.input_name);
+        inputPhone = (EditText) view.findViewById(R.id.input_phone);
+
+        gestureUtil = GestureUtil.getInstance();
+        gestureUtil.setGesture(getContext(), view, R.layout.fragment_m_join);
+
+        mMediaScanner = MediaScanner.getInstance(getContext());
+        cameraUtil = CameraUtil.getInstance();
 
         startCameraActionLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -74,22 +95,92 @@ public class MemberJoinFragment extends Fragment {
                     public void onActivityResult(ActivityResult result) {
                         if (result.getResultCode() == RESULT_OK) {
                             // There are no request codes
-                            imageView.setImageURI(imageCaptureUri);
+                            cameraUtil.setImageToBitmap(imageFilePath,imageView, mMediaScanner); //이미지 저장
                         }
                     }
                 }
         );
 
-
+        //join button click
+        btnJoin = view.findViewById(R.id.btn_join);
     }
 
-    /*@Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.input_image:
-                checkImageMode(v);
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        memberVO = new MemberVO();
+        App mApp = App.getInstance();
+
+        btnJoin.setOnClickListener(v -> {
+            if(isNullOrEmpty(inputId.getText().toString().trim())){
+                Toast.makeText(getContext(),"ID를 입력해주세요", Toast.LENGTH_SHORT).show();
+            }
+            if(isNullOrEmpty(inputPwd.getText().toString().trim())){
+                Toast.makeText(getContext(),"패스워드를 입력해주세요", Toast.LENGTH_SHORT).show();
+            }
+            if(isNullOrEmpty(inputName.getText().toString().trim())){
+                Toast.makeText(getContext(),"이름를 입력해주세요", Toast.LENGTH_SHORT).show();
+            }
+            if(isNullOrEmpty(inputPhone.getText().toString().trim())){
+                Toast.makeText(getContext(),"전화번호를 입력해주세요", Toast.LENGTH_SHORT).show();
+            }
+            memberVO.setId(inputId.getText().toString().trim());
+            memberVO.setPwd(inputPwd.getText().toString().trim());
+            memberVO.setName(inputName.getText().toString().trim());
+            memberVO.setPhone(inputPhone.getText().toString().trim());
+            memberVO.setUri(mApp.getImageUri());
+            Log.i("i", mApp.getImageUri());
+            if(findOne(memberVO)){
+                Toast.makeText(getContext(),"이미 존재하는 ID 입니다.", Toast.LENGTH_SHORT).show();
+            }else{
+                //DB에 저장
+                insertMember();
+            }
+
+        });
+    }
+
+    public boolean isNullOrEmpty(String str){
+        if(str == null || str == ""){
+            return true;
         }
-    }*/
+        return false;
+    }
+
+    public boolean findOne(MemberVO member){
+        dbHelper = new DBHelper(getContext());
+        myDB = dbHelper.getReadableDatabase();
+        Cursor cursor;
+        cursor = myDB.rawQuery("SELECT ID FROM MEMBER WHERE ID = '"+member.getId()+"';", null);
+
+        if(cursor.getCount() >0){
+            cursor.close();
+            myDB.close();
+            return true;
+        }
+        cursor.close();
+        myDB.close();
+        return false;
+    }
+
+    public void insertMember(){
+        try {
+            dbHelper = new DBHelper(getContext());
+            myDB = dbHelper.getWritableDatabase();
+            myDB.execSQL("INSERT INTO MEMBER VALUES('"
+                    + memberVO.getId() + "','"
+                    + memberVO.getPwd() + "','"
+                    + memberVO.getName() + "','"
+                    + memberVO.getPhone() + "','"
+                    + memberVO.getUri() + "');");
+            myDB.close();
+            Toast.makeText(this.getContext(),"입력완료",Toast.LENGTH_SHORT);
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
 
     public void onImageClick(View view){
         if(view.getId() == R.id.input_image){
@@ -155,7 +246,7 @@ public class MemberJoinFragment extends Fragment {
         );
 
         // Save a file: path for use with ACTION_VIEW intents
-        currentPhotoPath = image.getAbsolutePath();
+        imageFilePath = image.getAbsolutePath();
         return image;
     }
 

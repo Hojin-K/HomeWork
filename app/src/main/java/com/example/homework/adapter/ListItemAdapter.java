@@ -52,16 +52,11 @@ public class ListItemAdapter extends BaseAdapter {
 
         if(member.getUri() != null){
             try {
-                /*BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inJustDecodeBounds = true;
-                options.outWidth = 20;
-                options.outHeight = 20;*/
                 Log.i("i", member.getUri());
-                //Bitmap bmp = BitmapFactory.decodeFile(member.getUri(), options);
                 Bitmap bmp = BitmapFactory.decodeFile(member.getUri());
 
                 if ( bmp != null ) {
-                    image.setImageBitmap(bmp); // m_ivShowImage : ImageView
+                    image.setImageBitmap(bmp);
                 }
             }
             catch( Exception e ) {

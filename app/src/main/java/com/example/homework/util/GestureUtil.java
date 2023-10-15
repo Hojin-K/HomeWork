@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ScrollView;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -16,17 +17,8 @@ public class GestureUtil {
 
     private View view;
     private int viewId;
-
     private String viewName;
-
-    private float downX;
-    private float upX;
-    private float downY;
-    private float upY;
-    private float distX;
-    private float distY;
-
-
+    private ScrollView scrollView;
     private GestureDetector detector;
     private Context context;
 
@@ -42,6 +34,10 @@ public class GestureUtil {
         return instance;
     }
 
+    public void setScrollView(ScrollView scrollView) {
+        this.scrollView = scrollView;
+    }
+
     public void setGesture(Context context, View view, int viewId) {
         this.view = view;
         this.viewId = viewId;
@@ -51,26 +47,10 @@ public class GestureUtil {
         view.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                //scrollView.requestDisallowInterceptTouchEvent(true);
+                //v.getParent().requestDisallowInterceptTouchEvent(true);
                 detector.onTouchEvent(event);
-                int direction = 0;
-                if(event.getAction() == MotionEvent.ACTION_UP){
-                    Log.i("Info", "키업했어요");
-                    Log.i("Info", distX+"///"+distY);
-                    if(distY < 3 && distY > -3){
-                        if(distX > 2){
-                            Log.i("Info", "왼쪽");
-                            direction = 0;
 
-                        }else if(distX < -2){
-                            Log.i("Info", "오른쪽");
-                            direction = 1;
-                        }
-
-                        moveFragement(direction);
-                    }else{
-                        Log.i("Info", "이동없음");
-                    }
-                }
                 return true;
             }
         });
@@ -93,10 +73,25 @@ public class GestureUtil {
 
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-                distX = 0.0f;
-                distY = 0.0f;
-                distX = distanceX;
-                distY = distanceY;
+
+
+                Log.i("Info", "x 거리값 : "+distanceX);
+                Log.i("Info", "y 거리값 : "+distanceY);
+
+                int direction = 0;
+                if(distanceY < 1 && distanceY > -1){
+                    if(distanceX > 4){
+                        Log.i("Info", "왼쪽");
+                        direction = 0;
+                        moveFragement(direction);
+                    }else if(distanceX < -4){
+                        Log.i("Info", "오른쪽");
+                        direction = 1;
+                        moveFragement(direction);
+                    }
+                }else{
+                    Log.i("Info", "이동없음");
+                }
 
                 return true;
             }

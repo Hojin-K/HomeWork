@@ -2,24 +2,26 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:weightSum="10"
+    >
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/fragment_list"
         android:text="리스트"
-        android:layout_weight="2"/>
-<ScrollView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_weight="8"
-    android:nestedScrollingEnabled="true"
-    android:id="@+id/sView">
-        <ListView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/listView" />
-</ScrollView>
+        android:layout_weight="0.5"/>
+
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="9.5"
+        android:choiceMode="multipleChoice"
+        android:padding="10dp"
+        android:scrollbarSize="5dp"
+        android:scrollingCache="true"
+        android:smoothScrollbar="true" />
 
 </LinearLayout>

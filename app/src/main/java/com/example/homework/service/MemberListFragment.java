@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.ScrollView;
 
@@ -29,9 +30,7 @@ public class MemberListFragment extends Fragment {
     private final String TAG = getClass().getSimpleName();
     private View view;
     private GestureUtil gestureUtil;
-
     private ListView listView;
-    private ScrollView scrollView;
     private ListItemAdapter listItemAdapter;
     private SQLiteDatabase myDB;
     private MemberVO memberVO;
@@ -41,7 +40,7 @@ public class MemberListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view =inflater.inflate(R.layout.fragment_m_list, container, false);
-        scrollView = view.findViewById(R.id.sView);
+        //scrollView = view.findViewById(R.id.sView);
         listView = view.findViewById(R.id.listView);
         listItemAdapter = new ListItemAdapter();
 
@@ -54,7 +53,7 @@ public class MemberListFragment extends Fragment {
         }
 
         listView.setAdapter(listItemAdapter);
-        setListViewHeightBasedOnChildren(listView);
+        //setListViewHeightBasedOnChildren(listView);
 
         gestureUtil = GestureUtil.getInstance();
         gestureUtil.setGesture(getContext(), listView, R.layout.fragment_m_list);
@@ -84,7 +83,7 @@ public class MemberListFragment extends Fragment {
         myDB.close();
     }
 
-    public void setListViewHeightBasedOnChildren(ListView listView) {
+    /*public void setListViewHeightBasedOnChildren(ListView listView) {
         ListItemAdapter listAdapter = (ListItemAdapter) listView.getAdapter();
         if (listAdapter == null) {
             // pre-condition
@@ -104,5 +103,5 @@ public class MemberListFragment extends Fragment {
         params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
         listView.setLayoutParams(params);
         listView.requestLayout();
-    }
+    }*/
 }

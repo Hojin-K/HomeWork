@@ -29,6 +29,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.homework.App;
 import com.example.homework.R;
@@ -130,7 +131,7 @@ public class MemberJoinFragment extends Fragment {
             memberVO.setName(inputName.getText().toString().trim());
             memberVO.setPhone(inputPhone.getText().toString().trim());
             memberVO.setUri(mApp.getImageUri());
-            Log.i("i", mApp.getImageUri());
+            //Log.i("i", (mApp.getImageUri() == null) ? null : mApp.getImageUri());
             if(findOne(memberVO)){
                 Toast.makeText(getContext(),"이미 존재하는 ID 입니다.", Toast.LENGTH_SHORT).show();
             }else{
@@ -175,10 +176,21 @@ public class MemberJoinFragment extends Fragment {
                     + memberVO.getPhone() + "','"
                     + memberVO.getUri() + "');");
             myDB.close();
-            Toast.makeText(this.getContext(),"입력완료",Toast.LENGTH_SHORT);
+
+            clearOfValues();
+
+            Toast.makeText(getContext(),"입력완료",Toast.LENGTH_SHORT).show();
         }catch (SQLException e){
             e.printStackTrace();
         }
+    }
+
+    public void clearOfValues(){
+        inputId.setText(null);
+        inputPwd.setText(null);
+        inputPhone.setText(null);
+        inputName.setText(null);
+        imageView.setImageURI(null);
     }
 
 
